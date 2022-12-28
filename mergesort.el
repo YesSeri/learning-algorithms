@@ -17,10 +17,6 @@ This is what it returns for different inputs.
      (= (1+ (length lst))(length lst2)))
     (list (reverse lst2) lst))
    (t (split-list (cdr lst)(cons (car lst) lst2)))))
-(split-list '(1 2 3 4 5))
-(split-list '(1))
-(split-list '())
-(split-list '(1 2))
 
 (defun merge-sort (lst)
   (cond ((null lst) '())
@@ -41,7 +37,30 @@ This is what it returns for different inputs.
 	(cons l-first (merge-fn (cdr left) right))
       	(cons r-first (merge-fn  left (cdr right)))))))
 
-(merge-sort '(1 3 5 6 2 4 5 6 1 0 9 -1))
-(merge-sort '())
-(merge-sort '(1))
-(merge-sort '(1 2))
+(defun merge-sort-tests ()
+  (and
+   (compare-lists (merge-sort '(1 -1 4 2 5)) '(-1 1 2 4 5))
+   (compare-lists (merge-sort '(1)) '(1))
+   (compare-lists (merge-sort '()) '())
+   (compare-lists (merge-sort '(2 1)) '(1 2))
+   (let* ((s (split-list '(1 2 3 4 5)))(left (car s))(right (cadr s)))
+     (compare-lists left '(1 2 3))
+     (compare-lists right '(4 5))
+   )
+   (compare-lists (split-list '(1)) '(1))
+   (compare-lists (split-list '()) '())
+   (let* ((s (split-list '(1 2)))(left (car s))(right (cadr s)))
+     (compare-lists left '(1))
+     (compare-lists right '(2)))))
+
+
+;; I made these two functions for my tests.
+(defun compare-lists-rec (lst1 lst2)
+  (let ((x (car lst1))(y (car lst2)))
+
+    (if (and (null lst1)(null lst2)) t
+    (and (= x y)(compare-lists (cdr lst1)(cdr lst2))))))
+
+(defun compare-lists (lst1 lst2)
+  (if (= (length lst1)(length lst2))
+      (compare-lists-rec lst1 lst2)))
